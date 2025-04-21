@@ -42,6 +42,7 @@ class ConsoleDraft {
         Space();
     }
 
+    // buffer to prevent instant page state flick 
     static void Buffer() {
         Console.Write("Press any key to continue...");
         Console.ReadKey();
