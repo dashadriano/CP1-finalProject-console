@@ -9,7 +9,6 @@ Clone this repository using:
 ```bash
 git clone https://github.com/dashadriano/console-employee-database
 ```
-Copy paste contents of cloned files into corresponding files in your C# Project environment. 
 
 The `.gitignore` file only caters to Visual Studio and VS Code users. For merge pushes from developers that use other IDEs, contact the repository owner: [@dashadriano](https://https://github.com/dashadriano)
 
