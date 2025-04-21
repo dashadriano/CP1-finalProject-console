@@ -1,0 +1,28 @@
+# === Build Artifacts ===
+bin/
+obj/
+
+# === VS Code settings ===
+.vscode/
+
+# === User-specific files ===
+*.user
+*.suo
+
+# === OS-specific clutter ===
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.nfs*
+
+# === Log files ===
+*.log
