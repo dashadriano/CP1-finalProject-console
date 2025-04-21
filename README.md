@@ -1,5 +1,5 @@
 # Computer Programming 1's Final Project (Console Version)
-Console-based employee salary management program, with admin and employee functionalities. Built via C#.
+Console-based employee salary management program version for the full project (has a GUI), with admin and employee functionalities. Built via C#.
 
 <em>Console version built by [@dashadriano](https://https://github.com/dashadriano) and [@Ejheyyyyy](https://github.com/Ejheyyyyy)</em>
 
