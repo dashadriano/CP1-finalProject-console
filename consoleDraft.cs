@@ -133,7 +133,8 @@ class ConsoleDraft {
         }
     }
 
-    static bool AskForPasswordAndRemove(string role, string filePath) { // regulates password asking loop until proper password is inputted
+    // regulates password asking loop until proper password is inputted (next two methods)
+    static bool AskForPasswordAndRemove(string role, string filePath) { 
         bool askingForPassword = true;
 
         while (askingForPassword) {
@@ -145,7 +146,7 @@ class ConsoleDraft {
         return false;
     }
 
-    static bool AskForPasswordAndAdd(string role, string filePath) { // regulates password asking loop until proper password is inputted
+    static bool AskForPasswordAndAdd(string role, string filePath) { 
         bool askingForPassword = true;
 
         while (askingForPassword) {
