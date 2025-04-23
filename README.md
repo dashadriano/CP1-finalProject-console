@@ -10,7 +10,7 @@ Clone this repository using:
 git clone https://github.com/dashadriano/CP1-finalProject-console
 ```
 
-The `.gitignore` file only caters to Visual Studio and VS Code users. For merge pushes from developers that use other IDEs, contact the repository owner: [@dashadriano](https://https://github.com/dashadriano)
+The `.gitignore` file only caters to Visual Studio and VS Code users. 
 
 # Development
 The program only utilizes a single `.cs` file. Other files included are needed for it to run, as well as other build files that will be included in the instantiation of your C# Project locally.
