@@ -94,27 +94,15 @@ class ConsoleDraft {
                     Header();
                     Console.WriteLine("Adding an employee!");
                     Space();
-                    
-                    // regulates password asking loop until proper password is inputted
-                    bool askingForEmpPassword = true;
-
-                    while (askingForEmpPassword) {
-                        Console.Write("New employee password: ");
-                        string newEmpPw = Console.ReadLine();
-
-                        if (AddPassword(newEmpPw, empFilePath)) {// should include other info creation about employee after
-                            askingForEmpPassword = false;
-                        } else {
-                            askingForEmpPassword = true;
-                        }
-                    }
-    
+                    AskForPasswordAndAdd("Employee", empFilePath);
                     Space();
                     Buffer();
                     break;
                 case 4:
                     Header();
-                    Console.WriteLine("Removing an employee!");
+                    Console.WriteLine("Removing an employee!"); 
+                    Space();
+                    AskForPasswordAndRemove("Employee", empFilePath);
                     Space();
                     Buffer();
                     break;
@@ -122,27 +110,15 @@ class ConsoleDraft {
                     Header();
                     Console.WriteLine("Adding an admin!"); 
                     Space();
-                    
-                     // regulates password asking loop until proper password is inputted
-                    bool askingForAdminPassword = true;
-
-                    while (askingForAdminPassword) {
-                        Console.Write("New admin password: ");
-                        string newAdminPw = Console.ReadLine();
-
-                        if (AddPassword(newAdminPw, adminFilePath)) {// should include other info creation about employee after
-                            askingForAdminPassword = false;
-                        } else {
-                            askingForAdminPassword = true;
-                        }
-                    }
-
+                    AskForPasswordAndAdd("Admin", adminFilePath);
                     Space();
                     Buffer();
                     break;
                 case 6:
                     Header();
                     Console.WriteLine("Removing an admin!"); 
+                    Space();
+                    AskForPasswordAndRemove("Admin", adminFilePath);
                     Space();
                     Buffer();
                     break;
@@ -157,6 +133,30 @@ class ConsoleDraft {
         }
     }
 
+    static bool AskForPasswordAndRemove(string role, string filePath) { // regulates password asking loop until proper password is inputted
+        bool askingForPassword = true;
+
+        while (askingForPassword) {
+            Console.Write($"{role} password: ");
+            string pwToBeRemoved = Console.ReadLine();
+
+            return RemovePassword(pwToBeRemoved, filePath);
+        }
+        return false;
+    }
+
+    static bool AskForPasswordAndAdd(string role, string filePath) { // regulates password asking loop until proper password is inputted
+        bool askingForPassword = true;
+
+        while (askingForPassword) {
+            Console.Write($"{role} password: ");
+            string pwToBeAdded = Console.ReadLine();
+
+            return AddPassword(pwToBeAdded, filePath);
+        }
+        return false;
+    }
+
     static bool AddPassword(string newPassword, string filePath) {
         string hashedPassword = HashPassword(newPassword); 
 
@@ -165,6 +165,7 @@ class ConsoleDraft {
         if (File.Exists(filePath)) {
             foreach (var existingPw in File.ReadLines(filePath)) {
                 if (existingPw.Trim() == hashedPassword) {
+                    Space();
                     Console.WriteLine("A user with this password already exists!");
                     return false; 
                 }
@@ -176,6 +177,38 @@ class ConsoleDraft {
         Space();
         Console.WriteLine("Password added successfully!");
         return true;
+    }
+
+    static bool RemovePassword(string passwordToDelete, string filePath) {
+        string hashedPassword = HashPassword(passwordToDelete); 
+
+        if (File.Exists(filePath)) {
+            var updatedLines = new List<string>();
+            bool passwordFound = false;
+
+            foreach (var existingPw in File.ReadAllLines(filePath)) {
+                if (existingPw.Trim() != hashedPassword) {
+                    updatedLines.Add(existingPw); 
+                } else {
+                    passwordFound = true; 
+                }
+            }
+
+            if (passwordFound) {
+                File.WriteAllLines(filePath, updatedLines); // rewrites storage text file without the password to be removed
+                Space();
+                Console.WriteLine("Password removed successfully!");
+                return true;
+            } else {
+                Space();
+                Console.WriteLine("No users found with the password entered.");
+                return false;
+            }
+        } else {
+            Space();
+            Console.WriteLine("Password file not found.");
+            return false;
+        }
     }
 
     static string HashPassword(string acceptedPassword) { // SHA-256 hashing logic
