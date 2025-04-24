@@ -136,12 +136,27 @@ class ConsoleDraft {
     // regulates password asking loop until proper password is inputted (next two methods)
     static bool AskForPasswordAndRemove(string role, string filePath) { 
         bool askingForPassword = true;
+        int passwordCount = File.ReadLines(adminFilePath).Count();
+        
+        if (role == "Admin") {
+            if (passwordCount != 1) {
+                while (askingForPassword) {
+                    Console.Write($"{role} password: ");
+                    string pwToBeRemoved = Console.ReadLine();
 
-        while (askingForPassword) {
-            Console.Write($"{role} password: ");
-            string pwToBeRemoved = Console.ReadLine();
+                    return RemovePassword(pwToBeRemoved, filePath);
+                }
+            } else {
+                Console.WriteLine("Cannot remove all instances of admin users. Only one admin user remains.");
+                return false;
+            }
+        } else {
+            while (askingForPassword) {
+                Console.Write($"{role} password: ");
+                string pwToBeRemoved = Console.ReadLine();
 
-            return RemovePassword(pwToBeRemoved, filePath);
+                return RemovePassword(pwToBeRemoved, filePath);
+            }
         }
         return false;
     }
