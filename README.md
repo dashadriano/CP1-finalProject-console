@@ -18,4 +18,7 @@ The program only utilizes a single `.cs` file. Other files included are needed f
 The code flow is regulated through `running`, a boolean attribute of the main class. Comments are included for other segments of the code to aid collaborators in skimming the code before edits. 
 
 A security liability for the project, noticeably, is the addition of the password text files in this repository, as well as storing plain-text passwords. 
-Although the addition of the text files for passwords will not be removed due to this being an academic project that needs to include the password text files for demonstration purposes, hashing may be added to the security feature of the app soon.
+
+Although the addition of the text files for passwords will not be removed due to this being an academic project that needs to include the password text files for demonstration purposes, hashing was added to provide security. Despite this, employee data under the `data` folder is of course in plain text for admin viewing purposes, and as such git commits are required not to contain real sensitive information such as accurate addresses for the employees if the employee logged is based on an actual person. 
+
+Admin passwords include 5 hashes, all of which are surnames of the members for this project–– all in lowercase.
