@@ -631,62 +631,65 @@ class ConsoleDraft
     }
 
     static void ShowEmployeeWageAndHours()
+{
+    var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
+    if (emp == null)
     {
-        var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
-        if (emp == null)
-        {
-            Console.WriteLine("Your record was not found.");
-            return;
-        }
-        double hours = emp.WorkSeconds / 3600.0;
-        Console.WriteLine($"Hours Worked: {hours:F2} hours");
-        Console.WriteLine($"Total Wage: ₱{emp.Wage:F2}");
+        Console.WriteLine("Your record was not found.");
+        return;
     }
+    double hours = emp.WorkSeconds / 3600.0;
+    double netWage = emp.Wage * 0.8; // Calculate net wage after 20% tax
+    Console.WriteLine($"Hours Worked: {hours:F2} hours");
+    Console.WriteLine($"Total Wage: ₱{emp.Wage:F2}");
+    Console.WriteLine($"Net Wage after Tax (20%): ₱{netWage:F2}");
+}
 
-    static void StartWageSession()
+static void StartWageSession()
+{
+    var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
+    if (emp == null)
     {
-        var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
-        if (emp == null)
-        {
-            Console.WriteLine("Your employee record was not found.");
-            Buffer();
-            return;
-        }
-
-        Console.WriteLine("Work session started. ₱200 will be credited every 15 seconds.");
-        Console.WriteLine("Press 'Q' to stop work session and return to the menu.");
-
-        bool working = true;
-        while (working && isLoggedIn)
-        {
-            int sleepInterval = 15000;
-            int slept = 0;
-            while (working && slept < sleepInterval)
-            {
-                if (Console.KeyAvailable)
-                {
-                    var key = Console.ReadKey(true);
-                    if (key.Key == ConsoleKey.Q)
-                    {
-                        working = false;
-                        break;
-                    }
-                }
-                Thread.Sleep(200);
-                slept += 200;
-            }
-            if (!working || !isLoggedIn)
-                break;
-
-            // Credit wage:
-            emp.Wage += 200;
-            emp.WorkSeconds += 15;
-            Console.WriteLine($"₱200 credited! Total Wage: ₱{emp.Wage:F2}");
-            SaveEmployeeData();
-        }
-        Console.WriteLine("Work session ended.");
+        Console.WriteLine("Your employee record was not found.");
         Buffer();
+        return;
     }
+
+    Console.WriteLine("Work session started. ₱200 will be credited every 15 seconds.");
+    Console.WriteLine("Press 'Q' to stop work session and return to the menu.");
+
+    bool working = true;
+    while (working && isLoggedIn)
+    {
+        int sleepInterval = 15000;
+        int slept = 0;
+        while (working && slept < sleepInterval)
+        {
+            if (Console.KeyAvailable)
+            {
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.Q)
+                {
+                    working = false;
+                    break;
+                }
+            }
+            Thread.Sleep(200);
+            slept += 200;
+        }
+        if (!working || !isLoggedIn)
+            break;
+
+        // Credit wage:
+        emp.Wage += 200;
+        emp.WorkSeconds += 15;
+        double netWage = emp.Wage * 0.8; // Calculate net wage after 20% tax
+        Console.WriteLine($"₱200 credited! Total Wage: ₱{emp.Wage:F2} | Net Wage after Tax: ₱{netWage:F2}");
+        SaveEmployeeData();
+    }
+    Console.WriteLine("Work session ended.");
+    Buffer();
+}
 
     static string GetLoggedInUserDepartment()
     {
