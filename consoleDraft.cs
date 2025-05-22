@@ -116,7 +116,7 @@ class ConsoleDraft {
 
     static void Header() {
         Console.Clear();
-        Console.WriteLine("Employee Salary Computation Management App");
+        Console.WriteLine("PayClock: Salary Management System");
         Console.WriteLine("-----------------------------------------");
         Console.WriteLine();
     }
