@@ -8,8 +8,7 @@ using System.Threading;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-class ConsoleDraft
-{
+class ConsoleDraft {
     // Application state
     static UserRole role = UserRole.None;
     static bool running = true;
@@ -25,16 +24,14 @@ class ConsoleDraft
     static List<Employee> employees = new List<Employee>();
 
     // User roles enumeration
-    enum UserRole
-    {
+    enum UserRole {
         None,
         Employee,
         Admin
     }
 
     // Departments enumeration
-    enum Department
-    {
+    enum Department {
         HUMAN_RESOURCES,
         FINANCE,
         OPERATIONS,
@@ -42,8 +39,7 @@ class ConsoleDraft
         CUSTOMER_SERVICE
     }
 
-    static void Main()
-    {
+    static void Main() {
         // Ensure data directories exist
         Directory.CreateDirectory(Path.GetDirectoryName(empDataFilePath) ?? "data");
         Directory.CreateDirectory(Path.GetDirectoryName(empPasswordsFilePath) ?? "passwords");
@@ -51,21 +47,14 @@ class ConsoleDraft
 
         LoadEmployeeData();
 
-        while (running)
-        {
-            if (InitMenu())
-            {
-                if (role == UserRole.Admin)
-                {
+        while (running) {
+            if (InitMenu()) {
+                if (role == UserRole.Admin) {
                     AdminMenu();
-                }
-                else if (role == UserRole.Employee)
-                {
+                } else if (role == UserRole.Employee) {
                     ShowEmployeeMenu();
                 }
-            }
-            else
-            {
+            } else {
                 Console.Clear();
                 Space();
                 Console.WriteLine("Program terminated. Goodbye!");
@@ -77,16 +66,13 @@ class ConsoleDraft
 
     #region Data Loading and Saving
 
-    static void LoadEmployeeData()
-    {
+    static void LoadEmployeeData() {
         employees.Clear();
-        if (!File.Exists(empDataFilePath))
-        {
+        if (!File.Exists(empDataFilePath)) {
             return;
         }
 
-        foreach (var line in File.ReadAllLines(empDataFilePath))
-        {
+        foreach (var line in File.ReadAllLines(empDataFilePath)) {
             var parts = line.Split('|');
             if (parts.Length != 8)
                 continue;
@@ -95,8 +81,7 @@ class ConsoleDraft
             if (!double.TryParse(parts[6], out double wage)) wage = 0;
             if (!int.TryParse(parts[7], out int workSeconds)) workSeconds = 0;
 
-            employees.Add(new Employee
-            {
+            employees.Add(new Employee {
                 Name = parts[0],
                 Age = age,
                 Gender = parts[2],
@@ -109,8 +94,7 @@ class ConsoleDraft
         }
     }
 
-    static void SaveEmployeeData()
-    {
+    static void SaveEmployeeData() {
         var lines = employees.Select(e =>
             string.Join("|", new string[] {
                 e.Name,
@@ -130,8 +114,7 @@ class ConsoleDraft
 
     #region UI Helpers
 
-    static void Header()
-    {
+    static void Header() {
         Console.Clear();
         Console.WriteLine("Employee Salary Computation Management App");
         Console.WriteLine("-----------------------------------------");
@@ -140,8 +123,7 @@ class ConsoleDraft
 
     static void Space() => Console.WriteLine();
 
-    static void Buffer()
-    {
+    static void Buffer() {
         Console.WriteLine();
         Console.Write("Press any key to continue...");
         Console.ReadKey(true);
@@ -151,10 +133,8 @@ class ConsoleDraft
 
     #region Menus
 
-    static bool InitMenu()
-    {
-        while (true)
-        {
+    static bool InitMenu() {
+        while (true) {
             Header();
             Console.WriteLine("Main Menu:");
             Console.WriteLine("1. Login");
@@ -162,15 +142,13 @@ class ConsoleDraft
             Space();
             Console.Write("> ");
 
-            if (!int.TryParse(Console.ReadLine(), out int choice))
-            {
+            if (!int.TryParse(Console.ReadLine(), out int choice)) {
                 Console.WriteLine("Invalid input. Please enter 1 or 2.");
                 Buffer();
                 continue;
             }
 
-            switch (choice)
-            {
+            switch (choice) {
                 case 1:
                     if (Login()) return true;
                     Console.WriteLine("Continue login attempts? (Y/N): ");
@@ -187,12 +165,10 @@ class ConsoleDraft
         }
     }
 
-    static void AdminMenu()
-    {
+    static void AdminMenu() {
         bool inAdminView = true;
 
-        while (inAdminView)
-        {
+        while (inAdminView) {
             Header();
             Console.WriteLine("Admin Menu:");
             Console.WriteLine("1. View Employees");
@@ -205,15 +181,13 @@ class ConsoleDraft
             Space();
             Console.Write("> ");
 
-            if (!int.TryParse(Console.ReadLine(), out int choice))
-            {
+            if (!int.TryParse(Console.ReadLine(), out int choice)) {
                 Console.WriteLine("Invalid input. Please enter a number 1-7.");
                 Buffer();
                 continue;
             }
 
-            switch (choice)
-            {
+            switch (choice) {
                 case 1:
                     Header();
                     ViewEmployees();
@@ -256,10 +230,8 @@ class ConsoleDraft
         }
     }
 
-    static void ShowEmployeeMenu()
-    {
-        if (!isLoggedIn)
-        {
+    static void ShowEmployeeMenu() {
+        if (!isLoggedIn) {
             Console.WriteLine("Access denied. Please login.");
             Buffer();
             return;
@@ -267,8 +239,7 @@ class ConsoleDraft
 
         bool inEmployeeView = true;
 
-        while (inEmployeeView && isLoggedIn)
-        {
+        while (inEmployeeView && isLoggedIn) {
             Header();
             Console.WriteLine("Employee Menu:");
             Console.WriteLine("1. View Department Tasks");
@@ -278,15 +249,13 @@ class ConsoleDraft
             Space();
             Console.Write("> ");
 
-            if (!int.TryParse(Console.ReadLine(), out int choice))
-            {
+            if (!int.TryParse(Console.ReadLine(), out int choice)) {
                 Console.WriteLine("Invalid input. Try again.");
                 Buffer();
                 continue;
             }
 
-            switch (choice)
-            {
+            switch (choice) {
                 case 1:
                     ShowDepartmentTasks();
                     Buffer();
@@ -317,19 +286,16 @@ class ConsoleDraft
 
     #region Login / Password Handling
 
-    static bool Login()
-    {
+    static bool Login() {
         Header();
         Console.Write("Enter password: ");
         string password = ReadPassword();
         Space();
 
         UserRole user = ValidatePassword(password);
-        if (user != UserRole.None)
-        {
+        if (user != UserRole.None) {
             string hash = HashPassword(password);
-            if (user == UserRole.Employee && !employees.Any(e => e.PasswordHash == hash))
-            {
+            if (user == UserRole.Employee && !employees.Any(e => e.PasswordHash == hash)) {
                 Console.WriteLine("No employee record found for this password.");
                 Buffer();
                 return false;
@@ -348,8 +314,7 @@ class ConsoleDraft
         return false;
     }
 
-    static UserRole ValidatePassword(string enteredPassword)
-    {
+    static UserRole ValidatePassword(string enteredPassword) {
         string hashed = HashPassword(enteredPassword);
         if (File.Exists(empPasswordsFilePath) &&
             File.ReadLines(empPasswordsFilePath).Any(pw => pw.Trim() == hashed))
@@ -362,10 +327,8 @@ class ConsoleDraft
         return UserRole.None;
     }
 
-    static string HashPassword(string password)
-    {
-        using (SHA256 sha = SHA256.Create())
-        {
+    static string HashPassword(string password) {
+        using (SHA256 sha = SHA256.Create()) {
             byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
             StringBuilder sb = new StringBuilder();
             foreach(var b in bytes)
@@ -374,26 +337,21 @@ class ConsoleDraft
         }
     }
 
-    static string ReadPassword()
-    {
+    static string ReadPassword() {
         StringBuilder pass = new StringBuilder();
         ConsoleKeyInfo key;
 
-        while (true)
-        {
+        while (true) {
             key = Console.ReadKey(true);
             if (key.Key == ConsoleKey.Enter) break;
 
-            if (key.Key == ConsoleKey.Backspace)
-            {
-                if (pass.Length > 0)
-                {
+            if (key.Key == ConsoleKey.Backspace) {
+                if (pass.Length > 0) {
                     pass.Remove(pass.Length - 1, 1);
                     Console.Write("\b \b");
                 }
             }
-            else
-            {
+            else {
                 pass.Append(key.KeyChar);
                 Console.Write("*");
             }
@@ -406,16 +364,13 @@ class ConsoleDraft
 
     #region Admin Functions
 
-    static void ViewEmployees()
-    {
-        if (employees.Count == 0)
-        {
+    static void ViewEmployees() {
+        if (employees.Count == 0) {
             Console.WriteLine("No employees found.");
             return;
         }
         int count = 1;
-        foreach (var e in employees)
-        {
+        foreach (var e in employees) {
             Console.WriteLine($"ID {count}:");
             Console.WriteLine($"  Name: {e.Name}");
             Console.WriteLine($"  Age: {e.Age}");
@@ -429,8 +384,7 @@ class ConsoleDraft
         }
     }
 
-    static void AddEmployee()
-    {
+    static void AddEmployee() {
         string name = AskForName();
         int age = AskForAge();
         string gender = AskForGender();
@@ -438,8 +392,7 @@ class ConsoleDraft
         string department = AskForDepartment();
         string passwordHash = AskForPasswordAndAdd("Employee", empPasswordsFilePath);
 
-        employees.Add(new Employee
-        {
+        employees.Add(new Employee {
             Name = name,
             Age = age,
             Gender = gender,
@@ -449,23 +402,22 @@ class ConsoleDraft
             WorkSeconds = 0,
             PasswordHash = passwordHash
         });
+
         SaveEmployeeData();
         Console.WriteLine("Employee added successfully!");
-        Buffer();
     }
 
-    static void EditEmployee()
-    {
-        if (employees.Count == 0)
-        {
+    static void EditEmployee() {
+        if (employees.Count == 0) {
             Console.WriteLine("No employees available to edit.");
             Buffer();
             return;
         }
+
         ViewEmployees();
         Console.Write("Enter employee ID to edit: ");
-        if (!int.TryParse(Console.ReadLine(), out int id) || id < 1 || id > employees.Count)
-        {
+        
+        if (!int.TryParse(Console.ReadLine(), out int id) || id < 1 || id > employees.Count) {
             Console.WriteLine("Invalid employee ID.");
             Buffer();
             return;
@@ -488,8 +440,7 @@ class ConsoleDraft
 
         Console.Write($"Gender [{emp.Gender}]: ");
         string gender = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(gender))
-        {
+        if (!string.IsNullOrWhiteSpace(gender)) {
             gender = gender.ToLower();
             if (gender == "male" || gender == "female" || gender == "other")
                 emp.Gender = char.ToUpper(gender[0]) + gender.Substring(1);
@@ -510,18 +461,16 @@ class ConsoleDraft
         Buffer();
     }
 
-    static void RemoveEmployee()
-    {
-        if (employees.Count == 0)
-        {
+    static void RemoveEmployee() {
+        if (employees.Count == 0) {
             Console.WriteLine("No employees available to remove.");
             Buffer();
             return;
         }
+
         ViewEmployees();
         Console.Write("Enter employee ID to remove: ");
-        if (!int.TryParse(Console.ReadLine(), out int id) || id < 1 || id > employees.Count)
-        {
+        if (!int.TryParse(Console.ReadLine(), out int id) || id < 1 || id > employees.Count) {
             Console.WriteLine("Invalid employee ID.");
             Buffer();
             return;
@@ -531,40 +480,31 @@ class ConsoleDraft
 
         Console.Write($"Confirm removal of employee {emp.Name} (Y/N)? ");
         string confirm = Console.ReadLine().ToUpper();
-        if (confirm == "Y")
-        {
+        if (confirm == "Y") {
             employees.RemoveAt(id - 1);
             RemovePasswordByHash(emp.PasswordHash, empPasswordsFilePath);
             SaveEmployeeData();
             Console.WriteLine("Employee removed successfully.");
-        }
-        else
-        {
+        } else {
             Console.WriteLine("Employee removal cancelled.");
         }
         Buffer();
     }
 
-    static void AddAdmin()
-    {
+    static void AddAdmin() {
         string passwordHash = AskForPasswordAndAdd("Admin", adminFilePath);
         Console.WriteLine("Admin added successfully!");
-        Buffer();
     }
 
-    static void RemoveAdmin()
-    {
-        if (!File.Exists(adminFilePath))
-        {
+    static void RemoveAdmin() {
+        if (!File.Exists(adminFilePath)) {
             Console.WriteLine("Admin password file not found.");
-            Buffer();
             return;
         }
         int count = File.ReadLines(adminFilePath).Count();
-        if (count <= 1)
-        {
+        
+        if (count <= 1) {
             Console.WriteLine("Cannot remove all admins. Only one admin remains.");
-            Buffer();
             return;
         }
 
@@ -574,11 +514,9 @@ class ConsoleDraft
             Console.WriteLine("Admin removed successfully.");
         else
             Console.WriteLine("Password not found.");
-        Buffer();
     }
 
-    static void RemovePasswordByHash(string passwordHash, string filePath)
-    {
+    static void RemovePasswordByHash(string passwordHash, string filePath) {
         if (!File.Exists(filePath))
             return;
 
@@ -590,20 +528,17 @@ class ConsoleDraft
 
     #region Employee Menu Functions
 
-    static void ShowDepartmentTasks()
-    {
+    static void ShowDepartmentTasks() {
         Header();
         string department = GetLoggedInUserDepartment();
-        if (string.IsNullOrWhiteSpace(department))
-        {
+        if (string.IsNullOrWhiteSpace(department)) {
             Console.WriteLine("Could not determine your department.");
             return;
         }
         Console.WriteLine($"Your Department: {department}");
         Console.WriteLine("Tasks:");
 
-        switch (department.ToUpper().Replace(" ", "_"))
-        {
+        switch (department.ToUpper().Replace(" ", "_")) {
             case "HUMAN_RESOURCES":
                 Console.WriteLine("- Manage employee records");
                 Console.WriteLine("- Conduct interviews");
@@ -630,69 +565,58 @@ class ConsoleDraft
         }
     }
 
-    static void ShowEmployeeWageAndHours()
-{
-    var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
-    if (emp == null)
-    {
-        Console.WriteLine("Your record was not found.");
-        return;
-    }
-    double hours = emp.WorkSeconds / 3600.0;
-    double netWage = emp.Wage * 0.8; // Calculate net wage after 20% tax
-    Console.WriteLine($"Hours Worked: {hours:F2} hours");
-    Console.WriteLine($"Total Wage: ₱{emp.Wage:F2}");
-    Console.WriteLine($"Net Wage after Tax (20%): ₱{netWage:F2}");
-}
-
-static void StartWageSession()
-{
-    var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
-    if (emp == null)
-    {
-        Console.WriteLine("Your employee record was not found.");
-        Buffer();
-        return;
-    }
-
-    Console.WriteLine("Work session started. ₱200 will be credited every 15 seconds.");
-    Console.WriteLine("Press 'Q' to stop work session and return to the menu.");
-
-    bool working = true;
-    while (working && isLoggedIn)
-    {
-        int sleepInterval = 15000;
-        int slept = 0;
-        while (working && slept < sleepInterval)
-        {
-            if (Console.KeyAvailable)
-            {
-                var key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.Q)
-                {
-                    working = false;
-                    break;
-                }
-            }
-            Thread.Sleep(200);
-            slept += 200;
+    static void ShowEmployeeWageAndHours() {
+        var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
+        if (emp == null) {
+            Console.WriteLine("Your record was not found.");
+            return;
         }
-        if (!working || !isLoggedIn)
-            break;
-
-        // Credit wage:
-        emp.Wage += 200;
-        emp.WorkSeconds += 15;
+        double hours = emp.WorkSeconds / 3600.0;
         double netWage = emp.Wage * 0.8; // Calculate net wage after 20% tax
-        Console.WriteLine($"₱200 credited! Total Wage: ₱{emp.Wage:F2} | Net Wage after Tax: ₱{netWage:F2}");
-        SaveEmployeeData();
+        Console.WriteLine($"Hours Worked: {hours:F2} hours");
+        Console.WriteLine($"Total Wage: ₱{emp.Wage:F2}");
+        Console.WriteLine($"Net Wage after Tax (20%): ₱{netWage:F2}");
     }
-    Console.WriteLine("Work session ended.");
-    Buffer();
-}
 
-    static string GetLoggedInUserDepartment()
-    {
+    static void StartWageSession() {
+        var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
+        if (emp == null) {
+            Console.WriteLine("Your employee record was not found.");
+            return;
+        }
+
+        Console.WriteLine("Work session started. ₱200 will be credited every 15 seconds.");
+        Console.WriteLine("Press 'Q' to stop work session and return to the menu.");
+
+        bool working = true;
+        while (working && isLoggedIn) {
+            int sleepInterval = 15000;
+            int slept = 0;
+            while (working && slept < sleepInterval) {
+                if (Console.KeyAvailable) {
+                    var key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Q) {
+                        working = false;
+                        break;
+                    }
+                }
+                Thread.Sleep(200);
+                slept += 200;
+            }
+            if (!working || !isLoggedIn)
+                break;
+
+            // Credit wage:
+            emp.Wage += 200;
+            emp.WorkSeconds += 15;
+            double netWage = emp.Wage * 0.8; // Calculate net wage after 20% tax
+            Console.WriteLine($"₱200 credited! Total Wage: ₱{emp.Wage:F2} | Net Wage after Tax: ₱{netWage:F2}");
+            SaveEmployeeData();
+        }
+        Console.WriteLine("Work session ended.");
+    }
+
+    static string GetLoggedInUserDepartment() {
         var emp = employees.FirstOrDefault(e => e.PasswordHash == loggedInUserPasswordHash);
         return emp?.Department ?? "";
     }
@@ -701,10 +625,8 @@ static void StartWageSession()
 
     #region Common Input & Password Helpers
 
-    static string AskForPasswordAndAdd(string role, string filePath)
-    {
-        while (true)
-        {
+    static string AskForPasswordAndAdd(string role, string filePath) {
+        while (true) {
             Console.Write($"Enter new {role} password: ");
             string pwd = Console.ReadLine();
             if (AddPassword(pwd, filePath))
@@ -712,13 +634,10 @@ static void StartWageSession()
         }
     }
 
-    static bool AddPassword(string newPassword, string filePath)
-    {
+    static bool AddPassword(string newPassword, string filePath) {
         string hashed = HashPassword(newPassword);
-        if (File.Exists(filePath))
-        {
-            if (File.ReadLines(filePath).Any(line => line.Trim() == hashed))
-            {
+        if (File.Exists(filePath)) {
+            if (File.ReadLines(filePath).Any(line => line.Trim() == hashed)) {
                 Console.WriteLine("That password already exists. Try a different one.");
                 return false;
             }
@@ -727,8 +646,7 @@ static void StartWageSession()
         return true;
     }
 
-    static bool RemovePassword(string passwordToDelete, string filePath)
-    {
+    static bool RemovePassword(string passwordToDelete, string filePath) {
         string hashed = HashPassword(passwordToDelete);
         if (!File.Exists(filePath))
             return false;
@@ -744,8 +662,7 @@ static void StartWageSession()
         return true;
     }
 
-    static string AskForName()
-    {
+    static string AskForName() {
         Console.Write("Name: ");
         var input = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(input)) return AskForName();
@@ -757,8 +674,7 @@ static void StartWageSession()
         return string.Join(" ", words);
     }
 
-    static int AskForAge()
-    {
+    static int AskForAge() {
         Console.Write("Age (18 - 60): ");
         if (int.TryParse(Console.ReadLine(), out int age) && age >= 18 && age <= 60)
             return age;
@@ -766,8 +682,7 @@ static void StartWageSession()
         return AskForAge();
     }
 
-    static string AskForGender()
-    {
+    static string AskForGender() {
         Console.Write("Gender (male, female, other): ");
         var input = Console.ReadLine()?.Trim().ToLower();
         if (input == "male" || input == "female" || input == "other")
@@ -776,12 +691,10 @@ static void StartWageSession()
         return AskForGender();
     }
 
-    static string AskForAddress()
-    {
+    static string AskForAddress() {
         Console.Write("Address (e.g., 123 Main St, City, State): ");
         var input = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(input))
-        {
+        if (string.IsNullOrWhiteSpace(input)) {
             Console.WriteLine("Address cannot be empty.");
             return AskForAddress();
         }
@@ -791,8 +704,7 @@ static void StartWageSession()
         return AskForAddress();
     }
 
-    static string AskForDepartment()
-    {
+    static string AskForDepartment() {
         Console.WriteLine("Available Departments:");
         foreach (var d in Enum.GetNames(typeof(Department)))
             Console.WriteLine($"- {d.Replace('_', ' ')}");
@@ -810,8 +722,7 @@ static void StartWageSession()
     #endregion
 }
 
-class Employee
-{
+class Employee {
     public string Name { get; set; }
     public int Age { get; set; }
     public string Gender { get; set; }

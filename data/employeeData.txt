@@ -1,1 +1,2 @@
 Ejhey|21|Male|123 main st, pasig city|FINANCE|9793dc7d386d82fa31dc143ec0b07a2bc3081ff0fe75a2eb8f255b57ed2e99df|1800.00|135
+Juan Dela Cruz|21|Male|123 Main St, City, State|OPERATIONS|87e31e75d0229aeac6909b2c12dd5feb43380238b011f985ee9e58bf8e4d40ee|0.00|0
